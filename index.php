@@ -92,8 +92,8 @@
       url: "api.php",
       method: "GET",
       success: (data) => {
+        src = JSON.parse(JSON.stringify(data.data));
         db = shuffle(data.data);
-        src = data.data;
         loadQuestion();
       },
       error: (err) => {
@@ -108,10 +108,10 @@
     });
 
     function checkAnswer() {
-      if (ans.val().toLowerCase() == db[index].word) {
+      if (ans.val().toLowerCase() == db[0].word) {
         console.log("Correct!");
       } else {
-        alert("Wrong. Answer is : " + db[index].word);
+        alert("Wrong. Answer is : " + db[0].word);
       }
       db.shift();
       loadQuestion();
@@ -119,7 +119,8 @@
 
     function loadQuestion() {
       if (db.length == 0) {
-        db = shuffle(src);
+        console.log("All questions exhausted... reloading with random set");
+        db = shuffle(JSON.parse(JSON.stringify(src)));
       }
       def.text(db[0].def);
       ans.val("");
