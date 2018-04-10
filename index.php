@@ -85,13 +85,15 @@
     let def = $("#definition");
     let ans = $("#answer");
     let index = 0;
+    let src = [];
     let db = [];
 
     $.ajax({
       url: "api.php",
       method: "GET",
       success: (data) => {
-        db = data.data;
+        db = shuffle(data.data);
+        src = data.data;
         loadQuestion();
       },
       error: (err) => {
@@ -111,13 +113,35 @@
       } else {
         alert("Wrong. Answer is : " + db[index].word);
       }
+      db.shift();
       loadQuestion();
     }
 
     function loadQuestion() {
-      index = Math.floor(Math.random()*db.length);
-      def.text(db[index].def);
+      if (db.length == 0) {
+        db = shuffle(src);
+      }
+      def.text(db[0].def);
       ans.val("");
+    }
+
+    function shuffle(array) {
+      var currentIndex = array.length, temporaryValue, randomIndex;
+
+      // While there remain elements to shuffle...
+      while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+      }
+
+      return array;
     }
   </script>
 </html>
